@@ -4,6 +4,6 @@ import main.project.model.Account;
 
 public interface AccountService {
 
-    boolean createAccount(Account account);
+    void createAccount(Account account);
     boolean loginAccount(Account account);
 }

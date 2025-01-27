@@ -3,7 +3,7 @@ package main.project.service;
 public class ValidationServiceImpl implements ValidationService {
 
 	@Override
-	public boolean validateUserName(String username) {
+	public boolean isValidUsername(String username) {
 		if (username.matches("^[A-Z]\\w{2,}$"))
 			return true;
 		if (username.trim().isEmpty()) {
@@ -21,7 +21,7 @@ public class ValidationServiceImpl implements ValidationService {
 	}
 
 	@Override
-	public boolean validatePassword(String password) {
+	public boolean isValidPassword(String password) {
 		if (password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[.!@#$%^&*_()-]).{6,}$"))
 			return true;
 		if (password.trim().isEmpty()) {

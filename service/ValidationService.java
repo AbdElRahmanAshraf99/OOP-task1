@@ -1,8 +1,7 @@
 package main.project.service;
 
 public interface ValidationService {
+	boolean isValidUsername(String userName);
 
-
-    boolean validateUserName(String userName);
-    boolean validatePassword(String password);
+	boolean isValidPassword(String password);
 }
