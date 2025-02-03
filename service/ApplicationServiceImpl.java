@@ -1,6 +1,6 @@
 package main.project.service;
 
-import main.project.model.Account;
+import main.project.model.AccountDH;
 
 import java.util.Scanner;
 import java.util.function.Predicate;
@@ -18,14 +18,10 @@ public class ApplicationServiceImpl implements ApplicationService {
 	@Override
 	public void run() {
 		System.out.println("Welcome Sir");
-		boolean isExceedTheLimitOrUserRequestClose;
-		do {
-			isExceedTheLimitOrUserRequestClose = showWelcomeCommands();
-		}
-		while (!isExceedTheLimitOrUserRequestClose);
+		showWelcomeCommands();
 	}
 
-	private boolean showWelcomeCommands() {
+	private void showWelcomeCommands() {
 		Scanner scanner = new Scanner(System.in);
 		int count = 0;
 		while (count < 4) {
@@ -36,47 +32,42 @@ public class ApplicationServiceImpl implements ApplicationService {
 			case 'A':
 			case 'a':
 				login();
-				return false;
+				return;
 			case 'B':
 			case 'b':
 				signup();
-				return false;
+				count = 0;
+				continue;
 			case 'C':
 			case 'c':
 				System.out.println("you are welcome.");
-				return true;
+				return;
 			default:
-				System.out.println("Invalid Choose");
+				System.out.println("Invalid Choice");
 			}
 			count++;
 		}
 		System.out.println("Sorry, You exceed the limit.\nPlease try again later.\nBye.");
-		return true;
 	}
 
 	private void signup() {
 		String username = acceptAValidField("username", validationService::isValidUsername);
 		String password = acceptAValidField("password", validationService::isValidPassword);
-		Account account = new Account(username, password);
+		AccountDH account = new AccountDH(username, password);
 		accountService.createAccount(account);
 	}
 
 	private void login() {
 		String username = acceptAValidField("username", validationService::isValidUsername);
 		String password = acceptAValidField("password", validationService::isValidPassword);
-		// 8.TODO SERVICE OF ACCOUNT TO LOGIN
-		if (accountService.loginAccount(new Account(username, password))) {
-			System.out.println("Login Success");
-			services();
-		}
-		else {
-			System.out.println("Account not Exist");
-		}
+		AccountDH account = new AccountDH(username, password);
+		if (accountService.loginAccount(account))
+			listServices(account);
 	}
 
 	private String acceptAValidField(String fieldName, Predicate<String> validator) {
 		Scanner scanner = new Scanner(System.in);
-		System.out.println("Please enter your username");
+		System.out.println("Please enter your " + fieldName);
 		String name = scanner.nextLine();
 		while (!validator.test(name)) {
 			System.out.println("Please enter a valid " + fieldName);
@@ -85,35 +76,74 @@ public class ApplicationServiceImpl implements ApplicationService {
 		return name;
 	}
 
-	private void services() {
-		System.out.println("1.Deposit   2.Withdraw    3.show details    4.Transfer    5. show balance   6.exit  7.logout");
-		// TODO create switch case such as on run function
-		// TODO every case on switch call function  don't forget (Invalid choose)
-	}
-
-	// TODO create deposit function
-	void deposit(Account a) {
-		// input int money
+	private void listServices(AccountDH account) {
+		System.out.println("1.Deposit   2.Withdraw   3.Transfer   4.Show balance  5.exit  6.logout");
 		Scanner scanner = new Scanner(System.in);
-		double mo = scanner.nextDouble();
-		// TODO pls validate money >= 100 and <= 20000
+		int count = 0;
+		while (count < 4) {
+			System.out.println("Please Enter your choose");
+			int n = scanner.nextInt();
+			switch (n) {
+			case 1:
+				deposit(account);
+				listServices(account);
+				return;
+			case 2:
+				withdraw(account);
+				listServices(account);
+				return;
+			case 3:
+				transfer(account);
+				listServices(account);
+				return;
+			case 4:
+				showBalance(account);
+				listServices(account);
+				return;
+			case 5:
+				return;
+			case 6:
+				showWelcomeCommands();
+				return;
+			default:
+				System.out.println("Invalid Choice");
+			}
+			count++;
+		}
+		System.out.println("Sorry, You exceed the limit.\nPlease try again later.\nBye.");
 	}
 
-	// TODO create Withdraw function
-	void withdraw(Account a) {
-		// input int money
-		// TODO pls validate money >= 100 and <= 8000
+	private void deposit(AccountDH account) {
+		System.out.println("Enter deposit amount (min 100, max 20000)");
+		Scanner scanner = new Scanner(System.in);
+		double money = scanner.nextDouble();
+		while (money < 100 || money > 20000) {
+			System.out.println("Please enter a valid deposit amount (min 100, max 20000)");
+			money = scanner.nextDouble();
+		}
+		account.setValueToDeposit(money);
+		accountService.deposit(account);
 	}
 
-	void showDetails(Account a) {
+	private void withdraw(AccountDH account) {
+		System.out.println("Enter withdrawal amount (min 100, max 8000)");
+		Scanner scanner = new Scanner(System.in);
+		double money = scanner.nextDouble();
+		while (money < 100 || money > 8000) {
+			System.out.println("Please enter a valid withdrawal amount (min 100, max 8000)");
+			money = scanner.nextDouble();
+		}
+		account.setValueToWithdraw(money);
+		accountService.withdraw(account);
 	}
 
-	void transfer(Account withdrawAccount) {
+	void transfer(AccountDH fromAccount) {
 		// TODO USER MUST give me user name of account that will transfer
 		// TODO input Account depositAccount
 		// TODO input int money
 	}
 
-	void showBalance(Account a) {
+	void showBalance(AccountDH accountDH) {
+		accountService.showBalance(accountDH);
 	}
 }

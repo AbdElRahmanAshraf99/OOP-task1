@@ -4,8 +4,8 @@ public class Account {
 
     private String userName;
     private String password;
-    private double balance;
-    private boolean active;
+    private double balance = 0;
+    private boolean active = true;
 
     public Account() {
     }
@@ -13,8 +13,6 @@ public class Account {
     public Account(String userName, String password) {
         this.userName = userName;
         this.password = password;
-        this.balance = 0;
-        this.active = true;
     }
 
     public String getUserName() {

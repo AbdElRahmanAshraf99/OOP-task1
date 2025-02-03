@@ -1,9 +1,18 @@
 package main.project.service;
 
-import main.project.model.Account;
+import main.project.model.AccountDH;
 
 public interface AccountService {
 
-    void createAccount(Account account);
-    boolean loginAccount(Account account);
+    void createAccount(AccountDH account);
+
+    boolean loginAccount(AccountDH account);
+
+    void deposit(AccountDH account);
+
+    void withdraw(AccountDH account);
+
+    boolean isValidAndActiveUserName(String username);
+
+    void showBalance(AccountDH accountDH);
 }
